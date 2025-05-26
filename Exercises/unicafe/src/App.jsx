@@ -21,6 +21,28 @@ const Statistic = ({text, score}) => {
   )
 }
 
+const total = (props) => {
+  let totalScore = 0
+  props.forEach(score => {
+    totalScore += score
+  })
+  return totalScore
+}
+
+const average = (good, neutral, bad) => {
+
+  return (
+    ((good * 1) + (bad * -1)) / (total([good, neutral, bad]))
+  )
+}
+
+const positive = (good, neutral, bad) => {
+
+  return (
+    `${(good / total([good, neutral, bad])) * 100}%`
+  )
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -46,6 +68,9 @@ const App = () => {
       <Statistic text='good' score={good} />
       <Statistic text='neutral' score={neutral} />
       <Statistic text='bad' score={bad} />
+      <Statistic text='all' score={total([good, neutral, bad])} />
+      <Statistic text='average' score={average(good, neutral, bad)} />
+      <Statistic text='positive' score={positive(good, bad, neutral)} />
     </div>
   )
 }
