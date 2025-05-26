@@ -14,12 +14,32 @@ const Button = ({onclick, text}) => {
   )
 }
 
-const Statistic = ({text, score}) => {
+const Stat = ({text, score}) => {
 
   return (
     <div>{text} {score}</div>
   )
 }
+
+const Statistics = ({good, neutral, bad}) => {
+  console.log(total([good, neutral, bad]))
+  if(total([good, neutral, bad]) === 0)
+  {
+    return <div>No feedback given</div>
+  }
+
+  return (
+    <>
+      <Stat text='good' score={good} />
+      <Stat text='neutral' score={neutral} />
+      <Stat text='bad' score={bad} />
+      <Stat text='all' score={total([good, neutral, bad])} />
+      <Stat text='average' score={average(good, neutral, bad)} />
+      <Stat text='positive' score={positive(good, bad, neutral)} />
+    </>
+  )
+}
+
 
 const total = (props) => {
   let totalScore = 0
@@ -65,12 +85,7 @@ const App = () => {
         text = 'bad'
       />
       <Display text='statistics' />
-      <Statistic text='good' score={good} />
-      <Statistic text='neutral' score={neutral} />
-      <Statistic text='bad' score={bad} />
-      <Statistic text='all' score={total([good, neutral, bad])} />
-      <Statistic text='average' score={average(good, neutral, bad)} />
-      <Statistic text='positive' score={positive(good, bad, neutral)} />
+      <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
   )
 }
