@@ -17,7 +17,10 @@ const Button = ({onclick, text}) => {
 const Stat = ({text, score}) => {
 
   return (
-    <div>{text} {score}</div>
+    <tr>
+      <td>{text}</td>
+      <td>{score}</td>
+    </tr>
   )
 }
 
@@ -29,14 +32,16 @@ const Statistics = ({good, neutral, bad}) => {
   }
 
   return (
-    <>
-      <Stat text='good' score={good} />
-      <Stat text='neutral' score={neutral} />
-      <Stat text='bad' score={bad} />
-      <Stat text='all' score={total([good, neutral, bad])} />
-      <Stat text='average' score={average(good, neutral, bad)} />
-      <Stat text='positive' score={positive(good, bad, neutral)} />
-    </>
+    <table>
+      <tbody>
+        <Stat text='good' score={good} />
+        <Stat text='neutral' score={neutral} />
+        <Stat text='bad' score={bad} />
+        <Stat text='all' score={total([good, neutral, bad])} />
+        <Stat text='average' score={average(good, neutral, bad)} />
+        <Stat text='positive' score={positive(good, bad, neutral)} />
+      </tbody>
+    </table>
   )
 }
 
@@ -52,14 +57,14 @@ const total = (props) => {
 const average = (good, neutral, bad) => {
 
   return (
-    ((good * 1) + (bad * -1)) / (total([good, neutral, bad]))
+    (((good * 1) + (bad * -1)) / (total([good, neutral, bad]))).toFixed(2)
   )
 }
 
 const positive = (good, neutral, bad) => {
 
   return (
-    `${(good / total([good, neutral, bad])) * 100}%`
+    `${((good / total([good, neutral, bad])) * 100).toFixed(2)}%`
   )
 }
 
