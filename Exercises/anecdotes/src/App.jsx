@@ -21,6 +21,16 @@ const incrementVote = (setVote, index) => {
   })
 }
 
+const findMostVotes = (votes) => {
+  let maxIndex = 0
+  for(let i = 1; i < votes.length; i++) {
+    if(votes[i] > votes[maxIndex])
+      maxIndex = i
+  }
+
+  return maxIndex
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -39,10 +49,15 @@ const App = () => {
 
   return (
     <div>
+      <h3>Anecdote of the day</h3>
       {anecdotes[selected]}
       <div>has {votes[selected]} votes</div>
       <Button onclick={() => incrementVote(setVote, selected)} text='vote' />
       <Button onclick={() => setSelected(getRandomInt(anecdotes.length))} text='next anecdote'/>
+      
+      <h3>Anecdote with the most votes</h3>
+      <div>{anecdotes[findMostVotes(votes)]}</div>
+      <div>has {votes[findMostVotes(votes)]} votes</div>
     </div>
 
   )
