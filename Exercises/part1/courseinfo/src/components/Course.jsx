@@ -1,7 +1,7 @@
 const Header = (props) => {
   
   return (
-    <h1>{props.course.name}</h1>
+    <h3>{props.course.name}</h3>
   )
 }
 
@@ -36,13 +36,17 @@ const Total = (props) => {
   )
 }
 
-const Course = ({course}) => {
+const Course = ({courses}) => {
 
     return (
         <div>
-            <Header course={course} />
-            <Content parts={course.parts} />
-            <Total parts={course.parts} />
+          {courses.map(course =>
+            <div>
+              <Header course={course} />
+              <Content parts={course.parts} />
+              <Total parts={course.parts} />
+            </div>
+          )}
         </div>
     )
 }
