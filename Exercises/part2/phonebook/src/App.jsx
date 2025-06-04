@@ -7,18 +7,32 @@ const Number = (props) => {
   )
 }
 
+const isDuplicate = (newName) => {
+  return 
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
   ]) 
   const [newName, setNewName] = useState('')
 
+  const isDuplicate = () => {
+    return persons.find((person) => person.name === newName) ? !undefined : false
+  }
+
   const addNumber = (event) => {
     event.preventDefault()
-    const numberObject = {
-      name: newName
+
+    if(isDuplicate()) {
+      alert(`${newName} is already added to phonebook`)
     }
-    setPersons(persons.concat(numberObject))
+    else {
+      const numberObject = {
+        name: newName
+      }
+      setPersons(persons.concat(numberObject))
+    }
     setNewName('')
   }
 
