@@ -1,15 +1,7 @@
 import { useState } from 'react'
-
-const Number = (props) => {
-
-  return (
-    <div>{props.name} {props.number}</div>
-  )
-}
-
-const isDuplicate = (newName) => {
-  return 
-}
+import Filter from './components/Filter.jsx'
+import PersonForm from './components/PersonForm.jsx'
+import Phonebook from './components/Phonebook.jsx'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -57,25 +49,12 @@ const App = () => {
 
   return (
     <div>
-      <div>debug: {newName}</div>
       <h2>Phonebook</h2>
-      filter shown with: <input value={newFilter} onChange={handleFilterChange}/>
-      <form onSubmit={addNumber}>
-        <h2>Add a new</h2>
-        <div>
-          name: <input required value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input required value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>                     
-      </form>
+      <Filter value={newFilter} event={handleFilterChange}/>
+      <h2>Add a new</h2>
+      <PersonForm submit={addNumber} name={newName} number={newNumber} onNameChange={handleNameChange} onNumChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      {persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase())).map((person) => 
-        <Number key={person.name} name={person.name} number={person.number} />)}
-      
+      <Phonebook persons={persons} filter={newFilter}></Phonebook>
     </div>
   )
 }
