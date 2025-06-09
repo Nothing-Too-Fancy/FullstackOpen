@@ -63,7 +63,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm submit={addNumber} name={newName} number={newNumber} onNameChange={handleNameChange} onNumChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <Phonebook persons={persons} filter={newFilter}></Phonebook>
+      <Phonebook persons={persons} filter={newFilter} setPersons={setPersons}></Phonebook>
     </div>
   )
 }
