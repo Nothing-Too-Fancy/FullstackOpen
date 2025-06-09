@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter.jsx'
 import PersonForm from './components/PersonForm.jsx'
 import Phonebook from './components/Phonebook.jsx'
-import axios from 'axios'
+import personService from './services/persons.js'
 
 const App = () => {
 
@@ -16,12 +16,12 @@ const App = () => {
   }
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
         setPersons(response.data)
       })
-  })
+  }, [])
 
   const addNumber = (event) => {
     event.preventDefault()
@@ -34,7 +34,11 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      setPersons(persons.concat(numberObject))
+      personService
+        .create(numberObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+        })
     }
     setNewName('')
     setNewNumber('')
