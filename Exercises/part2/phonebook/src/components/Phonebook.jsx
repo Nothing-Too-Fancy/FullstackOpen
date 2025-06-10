@@ -4,7 +4,7 @@ import personService from '../services/persons'
 const deleteNote = (id, setPersons, persons) => {
   if(window.confirm(`Are you sure you want to delete ${persons.find(x => x.id === id).name}?`))
   personService.remove(id)
-    .then(response => 
+    .then(data => 
       setPersons(persons.filter(x => x.id !== id))
     )
 }

@@ -18,16 +18,28 @@ const App = () => {
   useEffect(() => {
     personService
       .getAll()
-      .then(response => {
-        setPersons(response.data)
+      .then(data => {
+        setPersons(data)
       })
   }, [])
+
+  const updateNumber = () =>  {
+    const updatedPerson = persons.find((person) => person.name === newName)
+    personService
+      .update(updatedPerson.id, {...updatedPerson, number: newNumber})
+      .then(data => {
+        console.log(data.name)
+        setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
+  })
+  }
 
   const addNumber = (event) => {
     event.preventDefault()
 
     if(isDuplicate()) {
-      alert(`${newName} is already added to phonebook`)
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        updateNumber()
+      }
     }
     else {
       const numberObject = {
@@ -36,8 +48,8 @@ const App = () => {
       }
       personService
         .create(numberObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+        .then(newPerson => {
+          setPersons(persons.concat(newPerson))
         })
     }
     setNewName('')
