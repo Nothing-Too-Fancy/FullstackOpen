@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Filter from './components/Filter.jsx'
+import Notification from './components/Notification.jsx'
 import PersonForm from './components/PersonForm.jsx'
 import Phonebook from './components/Phonebook.jsx'
 import personService from './services/persons.js'
@@ -10,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   const isDuplicate = () => {
     return persons.find((person) => person.name === newName) ? !undefined : false
@@ -30,7 +32,11 @@ const App = () => {
       .then(data => {
         console.log(data.name)
         setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
-  })
+      })
+    setNotificationMessage(`Number for ${updatedPerson.name} updated`)
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
   }
 
   const addNumber = (event) => {
@@ -51,6 +57,10 @@ const App = () => {
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
         })
+      setNotificationMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
     }
     setNewName('')
     setNewNumber('')
@@ -71,6 +81,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter value={newFilter} event={handleFilterChange}/>
       <h2>Add a new</h2>
       <PersonForm submit={addNumber} name={newName} number={newNumber} onNameChange={handleNameChange} onNumChange={handleNumberChange}/>
