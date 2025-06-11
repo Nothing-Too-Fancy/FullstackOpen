@@ -1,11 +1,11 @@
 import Person from "./Person"
 import personService from '../services/persons'
 
-const deleteNote = (id, setPersons, persons) => {
+const deletePerson = (id, setPersons, persons) => {
   if(window.confirm(`Are you sure you want to delete ${persons.find(x => x.id === id).name}?`))
-  personService.remove(id)
-    .then(data => 
-      setPersons(persons.filter(x => x.id !== id))
+    personService.remove(id)
+      .then(data => 
+        setPersons(persons.filter(x => x.id !== id))
     )
 }
 
@@ -23,7 +23,7 @@ const Phonebook = (props) => {
                 key={person.name}
                 name={person.name}
                 number={person.number} 
-                deleteCallback={() => deleteNote(person.id, props.setPersons, props.persons)}
+                deleteCallback={() => deletePerson(person.id, props.setPersons, props.persons)}
               />)}
     </>
   )

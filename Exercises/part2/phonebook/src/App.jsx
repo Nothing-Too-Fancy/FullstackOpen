@@ -12,12 +12,14 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorFlag, setErrorFlag] = useState(false)
 
   const isDuplicate = () => {
     return persons.find((person) => person.name === newName) ? !undefined : false
   }
 
   useEffect(() => {
+    console.log('running useeffect')
     personService
       .getAll()
       .then(data => {
@@ -32,11 +34,19 @@ const App = () => {
       .then(data => {
         console.log(data.name)
         setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
+        setNotificationMessage(`Number for ${updatedPerson.name} updated`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       })
-    setNotificationMessage(`Number for ${updatedPerson.name} updated`)
-    setTimeout(() => {
-      setNotificationMessage(null)
-    }, 5000)
+      .catch(error => {
+        setNotificationMessage(`${updatedPerson.name} was already deleted from the server`)
+        setErrorFlag(true)
+        setPersons(persons.filter(person => person.id !== updatedPerson.id))
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
+      })
   }
 
   const addNumber = (event) => {
@@ -56,11 +66,11 @@ const App = () => {
         .create(numberObject)
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
+          setNotificationMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
-      setNotificationMessage(`Added ${newName}`)
-      setTimeout(() => {
-        setNotificationMessage(null)
-      }, 5000)
     }
     setNewName('')
     setNewNumber('')
@@ -81,7 +91,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} error={errorFlag} />
       <Filter value={newFilter} event={handleFilterChange}/>
       <h2>Add a new</h2>
       <PersonForm submit={addNumber} name={newName} number={newNumber} onNameChange={handleNameChange} onNumChange={handleNumberChange}/>
