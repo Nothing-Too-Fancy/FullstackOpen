@@ -49,16 +49,22 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const {id, name, number} = request.body
+  const person = request.body
+  const maxID = persons.length > 0 
+    ? Math.max(...persons.map(n => Number(n.id))) 
+    : 0
 
   if(name === "" || number === "") {
-    response.status(400).json({error: 'Missing name or number'})
+    return response.status(400).json({error: 'Missing name or number'})
   }
   if(persons.find(x => x.name === name)) {
-    response.status(400).json({error: 'Name already exists in phonebook'})
+    return response.status(400).json({error: 'Name already exists in phonebook'})
   }
 
-  console.log(request.body)
-  response.json(request.body)
+  person.id = String(maxID + 1)
+  persons = persons.concat(person)
+  console.log(person)
+  response.json(person)
 })
 
 app.delete('/api/persons/:id', (request, response) => {
