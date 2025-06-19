@@ -68,6 +68,7 @@ app.post('/api/persons', (request, response) => {
   console.log(person)
   response.json(person)
 })
+morgan.token('content', function (req, res) { return req.body })
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
