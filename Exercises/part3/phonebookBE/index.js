@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     { 
       "id": "1",
@@ -43,6 +45,27 @@ app.get('/api/persons/:id', (request, response) => {
     response.send(person)
   else
     response.status(404).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  const {id, name, number} = request.body
+
+  if(name === "" || number === "") {
+    response.status(400).json({error: 'Missing name or number'})
+  }
+  if(persons.find(x => x.name === name)) {
+    response.status(400).json({error: 'Name already exists in phonebook'})
+  }
+
+  console.log(request.body)
+  response.json(request.body)
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  persons= persons.filter((person) => person.id !== id)
+
+  response.status(204).end()
 })
 
 const PORT = 3001
