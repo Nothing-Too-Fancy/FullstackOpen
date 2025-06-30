@@ -23,7 +23,7 @@ app.get('/info', (request, response) => {
      <p>${receivedAt}</p>`)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person)
@@ -34,7 +34,7 @@ app.get('/api/persons/:id', (request, response) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const { name, number } = request.body
 
   if (name === "" || number === "") {
@@ -50,6 +50,7 @@ app.post('/api/persons', (request, response) => {
     console.log(person)
     response.json(person)
   })
+    .catch(error => next(error))
 
 })
 morgan.token('content', function (req, res) { return req.body })
@@ -70,7 +71,7 @@ app.put('/api/persons/:id', (request, response) => {
     })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(result => {
       response.status(204).end()
