@@ -16,13 +16,6 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.get('/info', (request, response) => {
-  const receivedAt = new Date()
-  response.send(
-    `<p>Phonebook has info for ${persons.length} people</p>
-     <p>${receivedAt}</p>`)
-})
-
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
@@ -37,7 +30,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const { name, number } = request.body
 
-  if (name === "" || number === "") {
+  if (name === '' || number === '') {
     return response.status(400).json({ error: 'Missing name or number' })
   }
 
@@ -47,23 +40,23 @@ app.post('/api/persons', (request, response, next) => {
   })
 
   person.save().then(savedPerson => {
-    console.log(person)
-    response.json(person)
+    console.log(savedPerson)
+    response.json(savedPerson)
   })
     .catch(error => next(error))
 
 })
-morgan.token('content', function (req, res) { return req.body })
+morgan.token('content', function (req) { return req.body })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const { name, number } = request.body
+  const data = request.body
 
   Person.findById(request.params.id)
     .then(person => {
       if (!person)
         return response.status(404).end()
 
-      person.number = number
+      person.number = data.number
 
       return person.save().then(updatedPerson => {
         response.json(updatedPerson)
@@ -74,14 +67,14 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
 })
 
-const errorHandler = (error, request, response, next) => {
-  console.error("ERROR:", error.message)
+const errorHandler = (error, response, next) => {
+  console.error(error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
