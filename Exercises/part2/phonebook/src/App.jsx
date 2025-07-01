@@ -7,7 +7,7 @@ import personService from './services/persons.js'
 
 const App = () => {
 
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
@@ -27,22 +27,28 @@ const App = () => {
       })
   }, [])
 
-  const updateNumber = () =>  {
+  const updateNumber = () => {
     const updatedPerson = persons.find((person) => person.name === newName)
     personService
-      .update(updatedPerson.id, {...updatedPerson, number: newNumber})
+      .update(updatedPerson.id, { ...updatedPerson, number: newNumber })
       .then(data => {
         console.log(data.name)
         setPersons(persons.map(person => person.id === updatedPerson.id ? data : person))
+        setErrorFlag(false)
         setNotificationMessage(`Number for ${updatedPerson.name} updated`)
         setTimeout(() => {
           setNotificationMessage(null)
         }, 5000)
       })
       .catch(error => {
-        setNotificationMessage(`${updatedPerson.name} was already deleted from the server`)
         setErrorFlag(true)
-        setPersons(persons.filter(person => person.id !== updatedPerson.id))
+        console.log(error)
+        if (error)
+          setNotificationMessage(error.response.data.error)
+        else {
+          setNotificationMessage(`${updatedPerson.name} was already deleted from the server`)
+          setPersons(persons.filter(person => person.id !== updatedPerson.id))
+        }
         setTimeout(() => {
           setNotificationMessage(null)
         }, 5000)
@@ -52,8 +58,8 @@ const App = () => {
   const addNumber = (event) => {
     event.preventDefault()
 
-    if(isDuplicate()) {
-      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+    if (isDuplicate()) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         updateNumber()
       }
     }
@@ -66,10 +72,15 @@ const App = () => {
         .create(numberObject)
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
+          setErrorFlag(false)
           setNotificationMessage(`Added ${newName}`)
           setTimeout(() => {
             setNotificationMessage(null)
           }, 5000)
+        })
+        .catch(error => {
+          setErrorFlag(true)
+          setNotificationMessage(error.response.data.error)
         })
     }
     setNewName('')
@@ -92,9 +103,9 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notificationMessage} error={errorFlag} />
-      <Filter value={newFilter} event={handleFilterChange}/>
+      <Filter value={newFilter} event={handleFilterChange} />
       <h2>Add a new</h2>
-      <PersonForm submit={addNumber} name={newName} number={newNumber} onNameChange={handleNameChange} onNumChange={handleNumberChange}/>
+      <PersonForm submit={addNumber} name={newName} number={newNumber} onNameChange={handleNameChange} onNumChange={handleNumberChange} />
       <h2>Numbers</h2>
       <Phonebook persons={persons} filter={newFilter} setPersons={setPersons}></Phonebook>
     </div>
